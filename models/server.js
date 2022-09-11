@@ -10,6 +10,7 @@ class Server {
 
         //Middlewares
         this.middlewares();
+
         //Rutas de mi aplicacion
         this.routes();
     }
@@ -21,6 +22,9 @@ class Server {
 
         //lectura y Parseo de la data  
         this.app.use(express.json());
+
+        // Directorio publico
+        this.app.use( express.static('public') );
     }
     routes(){
         this.app.use(this.usuariosPath ,require('../routes/usuarios'))
