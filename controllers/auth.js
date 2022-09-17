@@ -4,7 +4,6 @@ const bcryptjs = require('bcryptjs')
 const Usuario = require("../models/usuario"); 
 const { generarJWT } = require("../helpers/generar-jwt");
 const { googleVerify } = require("../helpers/google-verify");
-const { json } = require("express");
 
 const login = async(req,res = response) => {
     
@@ -57,22 +56,32 @@ const googleSignIn = async( req=request, res=response ) => {
     try {
         const { nombre, img, correo } = await googleVerify( id_token )
 
-        // console.log(correo, nombre, img)
+        console.log(correo, nombre, img)
+
         let usuario = await Usuario.findOne({correo});
-        console.log(usuario);
+
+        console.log('usuario',usuario);
         if( !usuario ){
             const data = {
                 nombre,
                 correo,
-                password:':P',
+                password:'',
                 img,
                 rol: 'USER_ROLE',
                 google:true
 
             };
-
+            console.log(data);
             usuario = new Usuario( data );
-            await usuario.save();
+            console.log('user',usuario)
+            try {
+                await usuario.save();
+            } catch (error) {
+                console.log('cayó aqui')   
+                console.log(error);
+            }
+            console.log('algo',algo);
+            console.log('usuario creado')
         }
 
         // Si el usuario en DB
@@ -81,17 +90,18 @@ const googleSignIn = async( req=request, res=response ) => {
                 msg:'Hable con el administrador, usuario bloqueado'
             })
         }
-
+         console.log('usuario',usuario);
+        console.log('llega  acrear el token')
         const token = await generarJWT( usuario.id );
 
             res.json({
                 usuario,
                 token
             })
+
     } catch (error) {
         res.status(400).json({
-            ok:false,
-            msg: 'El token no se pudo verificar'
+            msg: 'El token de google no es valido'
         })
     }
 
