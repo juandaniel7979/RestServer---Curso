@@ -65,23 +65,18 @@ const googleSignIn = async( req=request, res=response ) => {
             const data = {
                 nombre,
                 correo,
-                password:'',
+                password:':p',
                 img,
                 rol: 'USER_ROLE',
                 google:true
 
             };
-            console.log(data);
             usuario = new Usuario( data );
-            console.log('user',usuario)
             try {
                 await usuario.save();
             } catch (error) {
-                console.log('cayó aqui')   
                 console.log(error);
             }
-            console.log('algo',algo);
-            console.log('usuario creado')
         }
 
         // Si el usuario en DB
@@ -90,8 +85,10 @@ const googleSignIn = async( req=request, res=response ) => {
                 msg:'Hable con el administrador, usuario bloqueado'
             })
         }
-         console.log('usuario',usuario);
-        console.log('llega  acrear el token')
+
+
+        console.log('usuario',usuario);
+        console.log('llega  a crear el token')
         const token = await generarJWT( usuario.id );
 
             res.json({
